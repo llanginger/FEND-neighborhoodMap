@@ -40,9 +40,54 @@ $(function(){
 
     this.currentCoffeeShop = ko.observable(this.coffeeShopList()[0]);
 
+    // // Map section:
+    // self.mapOne = ko.observable({
+    //   lat: ko.observable( 47.6792 ),
+    //   lng: ko.observable( -122.3860 )
+    // });
 
-  }
-    ko.applyBindings(new ViewModel);
+  };
+
+  // ko.bindingHandlers.map = {
+  //   init: function(element, valueAccessor, allBindingsAccessor, ViewModel) {
+  //     var mapObj = ko.utils.unwrapObservable(valueAccessor());
+  //     var latLng = new google.maps.latLng(
+  //       ko.utils.unwrapObservable(mapObj.lat),
+  //       ko.utils.unwrapObservable(mapObj.lng));
+  //     var mapOptions = {
+  //       center: latLng(),
+  //       zoom: 14
+  //     };
+  //     mapObj.googleMap = new google.maps.Map(element, mapOptions);
+  //     mapObj.marker = new google.maps.Marker({
+  //       map: mapObj.googleMap,
+  //       position: latLng,
+  //       title: "New Marker!",
+  //       draggable: true
+  //     });
+  //     mapObj.onChangedCoord = function(newValue) {
+  //       var latLng = new google.maps.LatLng(
+  //           ko.utils.unwrapObservable(mapObj.lat),
+  //           ko.utils.unwrapObservable(mapObj.lng));
+  //           mapObj.googleMap.setCenter(latLng);
+  //       };
+  //
+  //     mapObj.onMarkerMoved = function(dragEnd) {
+  //       var latLng = mapObj.marker.getPosition();
+  //       mapObj.lat(latLng.lat());
+  //       mapObj.lng(latLng.lng());
+  //     };
+  //
+  //     mapObj.lat.subscribe(mapObj.onChangedCoord);
+  //     mapObj.lng.subscribe(mapObj.onChangedCoord);
+  //
+  //     google.maps.event.addListener(mapObj.marker, 'dragend', mapObj.onMarkerMoved);
+  //
+  //     $("#" + element.getAttribute("id")).data("mapObj",mapObj);
+  //   }
+  // }
+
+  ko.applyBindings(new ViewModel);
 
   var searchLocation = "ballard, wa";
   var searchCategory = "coffee";
@@ -59,10 +104,6 @@ $(function(){
       limit: "&limit=" + 5
     };
 
-    // var fourSqData = {
-    //   name: response.venues
-    // }
-
     var fourSq_URL =
       fourSqSettings.baseUrl + fourSqSettings.loc + "&client_id="+ fourSqSettings.clientID + "&client_secret=" + fourSqSettings.clientSecret + "&v=20130815" + fourSqSettings.cat + fourSqSettings.limit;
 
@@ -73,12 +114,12 @@ $(function(){
       .done(function(data){
         console.log(data);
         var venues = data.response.venues;
-        for (i in venues){
+        for (venue in venues){
           // console.log(venues[i].name);
-          fourSquareResults[i] = {
-            name: venues[i].name,
-            lat: venues[i].location.lat,
-            lng: venues[i].location.lng
+          fourSquareResults[venue] = {
+            name: venues[venue].name,
+            lat: venues[venue].location.lat,
+            lng: venues[venue].location.lng
           };
 
         };
