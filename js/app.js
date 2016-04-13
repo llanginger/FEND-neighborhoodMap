@@ -44,65 +44,53 @@ $(function(){
   }
     ko.applyBindings(new ViewModel);
 
+  var searchLocation = "ballard, wa";
+  var searchCategory = "coffee";
+  var fourSquareResults = [];
+
+  var fourSquareApiCall = function(){
+
+    var fourSqSettings = {
+      baseUrl: "https://api.foursquare.com/v2/venues/search?",
+      clientID: "WGMJMEF5PGBY0Z2VPGOTUV4IZWYTZS5V1E0TPIJHBSHRXNWS",
+      clientSecret: "MPIRWAHDMNBZVY2LSAVR1Y0WLQEP5SLDQHIXJZLVFILJHJDQ",
+      loc: "near=" + searchLocation,
+      cat: "&query=" + searchCategory,
+      limit: "&limit=" + 5
+    };
+
+    // var fourSqData = {
+    //   name: response.venues
+    // }
+
+    var fourSq_URL =
+      fourSqSettings.baseUrl + fourSqSettings.loc + "&client_id="+ fourSqSettings.clientID + "&client_secret=" + fourSqSettings.clientSecret + "&v=20130815" + fourSqSettings.cat + fourSqSettings.limit;
+
+    $.ajax(fourSq_URL)
+      .fail(function(data){
+        console.log("Failed 4square request");
+      })
+      .done(function(data){
+        console.log(data);
+        var venues = data.response.venues;
+        for (i in venues){
+          // console.log(venues[i].name);
+          fourSquareResults[i] = venues[i].name;
+
+        };
+        console.log(fourSquareResults);
+      })
+
+    console.log(fourSq_URL);
+  };
+  fourSquareApiCall();
+
 })
 
 
 
 
-
-
-
-
-
-
-
-
-
-  // var myModel = {
-  //   menuBar: {
-  //     coffeeShops: "shop list here",
-  //     peopleCount: "people list here",
-  //     contact: "contact info here",
-  //   },
-  //   newCoffeeShop: ko.observableArray()
-  // }
-  console.log("hello");
-
-  // console.log(myModel.newCoffeeShop()[0]);
-
-  // ko.applyBindings(myModel);
-
-  // for (item in myModel.menuBar){
-  //   $("#menu-bar").append("<button class='blue'>" + myModel.menuBar[item] + "</button>");
-  // }
-
-// })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Google Maps code:
 var myLatLongArray = [[47.6792, -122.3860]];
 
 
@@ -111,7 +99,7 @@ var myLatLongArray = [[47.6792, -122.3860]];
 
     var map = new google.maps.Map(document.getElementById('map'), {
       center: myLatLong,
-      zoom: 10
+      zoom: 14
     });
     for (var loc = 0; loc < myLatLongArray.length; loc++){
       console.log(myLatLongArray[loc][0]);
@@ -160,6 +148,8 @@ var myLatLongArray = [[47.6792, -122.3860]];
     content: contentString
   })
 }
+
+
 
 
 
