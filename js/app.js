@@ -75,10 +75,14 @@ $(function(){
         var venues = data.response.venues;
         for (i in venues){
           // console.log(venues[i].name);
-          fourSquareResults[i] = venues[i].name;
+          fourSquareResults[i] = {
+            name: venues[i].name,
+            lat: venues[i].location.lat,
+            lng: venues[i].location.lng
+          };
 
         };
-        console.log(fourSquareResults);
+        console.log(fourSquareResults[0].lat);
       })
 
     console.log(fourSq_URL);
