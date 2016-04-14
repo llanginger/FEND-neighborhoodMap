@@ -103,6 +103,15 @@ nav li {
   display: block;
 }
 
+input, button, select {
+  margin-right: 20px;
+  margin-top: 10px;
+}
+
+button {
+  cursor: pointer;
+}
+
 .nav-bar ul a:hover {
   background: #333;
 }
