@@ -37,6 +37,7 @@ $(function(){
     this.removeSelected = function(){
       self.fourSquareResults.removeAll(self.selectedItems());
       self.selectedItems([]);
+      console.log(self.fourSquareResults()[0].name);
     }
 
     this.fourSquareApiCall = function(){
