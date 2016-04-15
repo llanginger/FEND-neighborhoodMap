@@ -73,17 +73,6 @@ $(function(){
             // console.log(self.fourSquareResults()[venue].name);
           };
 
-<<<<<<< HEAD
-        };
-        console.log(fourSquareResults[0].lat);
-        console.log(fourSquareResults);
-
-      })
-||||||| merged common ancestors
-        };
-        console.log(fourSquareResults[0].lat);
-      })
-=======
         })
 
         console.log(fourSq_URL);
@@ -91,7 +80,6 @@ $(function(){
     // fourSquareApiCall();
 
 
->>>>>>> master
 
   };
 
@@ -105,10 +93,6 @@ $(function(){
 
 })
 
-// var fourSquareResults = [];
-// var gLat = fourSquareResults[0];
-// var gLng = fourSquareResults[0];
-// console.log(fourSquareResults);
 
 // ko.bindingHandlers.map = {
 //   init: function(element, valueAccessor, allBindingsAccessor, ViewModel) {
