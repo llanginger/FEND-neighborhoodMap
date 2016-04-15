@@ -83,6 +83,8 @@ $(function(){
 
         };
         console.log(fourSquareResults[0].lat);
+        console.log(fourSquareResults);
+
       })
 
     console.log(fourSq_URL);
@@ -91,6 +93,10 @@ $(function(){
 
 })
 
+// var fourSquareResults = [];
+// var gLat = fourSquareResults[0];
+// var gLng = fourSquareResults[0];
+// console.log(fourSquareResults);
 
 
 
