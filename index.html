@@ -34,16 +34,11 @@
             <li><input id="location" onfocus="if(this.value == 'Location') { this.value = ''; }" onblur="if(this.value == '') {this.value = 'Location'}" data-bind="value: searchLocation" /></li>
             <li><button id="search-now" data-bind="click: fourSquareApiCall">Search Now</button></li>
             <li>
-              <select multiple="multiple" height="7">
-                <option>1111111111</option>
-                <option>2222222222</option>
-                <option>3333333333</option>
-                <option>4444444444</option>
-                <option>5555555555</option>
+              <select multiple="multiple" height="7" data-bind="options: fourSquareResults, optionsText: 'name', selectedOptions: selectedItems">
               </select>
             </li>
 
-            <li><a href="#"><span data-bind="text: name"></a></li>
+            <li><button id="remove-item" data-bind="click: removeSelected, enable: selectedItems().length > 0">Remove</button></a></li>
 
             <li><a href="#">Contact Us</a></li>
         </ul>

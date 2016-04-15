@@ -108,6 +108,14 @@ input, button, select {
   margin-top: 10px;
 }
 
+select, button {
+  width: 131px;
+}
+
+select {
+  height: 200px;
+}
+
 button {
   cursor: pointer;
 }
@@ -126,5 +134,5 @@ button {
 }
 
 .wrapper.open {
-  transform: translateX(20%);
+  transform: translateX(230px);
 }

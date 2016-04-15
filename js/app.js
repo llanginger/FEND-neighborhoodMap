@@ -27,11 +27,20 @@ $(function(){
 
     this.searchLocation = ko.observable("ballard, wa");
     this.searchCategory = ko.observable("coffee");
-    this.resultLimit = ko.observable(5);
+    this.resultLimit = ko.observable(10);
     this.fourSquareResults = ko.observableArray([]);
+    // this.itemsToAdd = ko.observable("");
+
+
+    this.selectedItems = ko.observableArray([]);
+
+    this.removeSelected = function(){
+      self.fourSquareResults.removeAll(self.selectedItems());
+      self.selectedItems([]);
+    }
 
     this.fourSquareApiCall = function(){
-
+      self.fourSquareResults([]);
       var fourSqSettings = {
         baseUrl: "https://api.foursquare.com/v2/venues/search?",
         clientID: "&client_id=" + "WGMJMEF5PGBY0Z2VPGOTUV4IZWYTZS5V1E0TPIJHBSHRXNWS",
@@ -53,18 +62,20 @@ $(function(){
           var venues = data.response.venues;
           for (var venue in venues){
             // console.log(venues[i].name);
-            self.fourSquareResults[venue] = {
+            self.fourSquareResults.push({
               name: venues[venue].name,
               lat: venues[venue].location.lat,
               lng: venues[venue].location.lng
-            };
+            });
 
+
+            // console.log(self.fourSquareResults()[venue].name);
           };
-          console.log(self.fourSquareResults[0].lat);
+
         })
 
-      console.log(fourSq_URL);
-    };
+        console.log(fourSq_URL);
+      };
     // fourSquareApiCall();
 
 
