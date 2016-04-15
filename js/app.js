@@ -1,3 +1,8 @@
+// TODO:  Check out jquerymobile for mobile styling.
+//        Look into localstorage so that options persist.
+//        Learn how to get the google map working.
+//        Style.
+
 $(function(){
 
   $(".nav-toggle").on("click", function(){
@@ -23,14 +28,11 @@ $(function(){
   var ViewModel = function(){
     var self = this;
 
-    // 4sqr section:
-
+    // 4-SQR SECTION:
     this.searchLocation = ko.observable("ballard, wa");
     this.searchCategory = ko.observable("coffee");
     this.resultLimit = ko.observable(10);
     this.fourSquareResults = ko.observableArray([]);
-    // this.itemsToAdd = ko.observable("");
-
 
     this.selectedItems = ko.observableArray([]);
 
@@ -38,6 +40,15 @@ $(function(){
       self.fourSquareResults.removeAll(self.selectedItems());
       self.selectedItems([]);
       console.log(self.fourSquareResults()[0].name);
+    }
+
+    this.displayRandom = function(){
+      var ranNum = Math.floor(Math.random() * self.fourSquareResults().length);
+      var newLat = self.fourSquareResults()[ranNum].lat;
+      var newLng = self.fourSquareResults()[ranNum].lng;
+      myLatLong = {lat: newLat, lng: newLng};
+      console.log(myLatLong);
+      initMap();
     }
 
     this.fourSquareApiCall = function(){
@@ -68,19 +79,10 @@ $(function(){
               lat: venues[venue].location.lat,
               lng: venues[venue].location.lng
             });
-
-
             // console.log(self.fourSquareResults()[venue].name);
           };
-
         })
-
-        console.log(fourSq_URL);
       };
-    // fourSquareApiCall();
-
-
-
   };
 
   ko.applyBindings(new ViewModel);
@@ -137,20 +139,20 @@ $(function(){
 
 // Google Maps code:
 var myLatLongArray = [[47.6792, -122.3860]];
+var myLatLong = {lat: 47.6792, lng: -122.3860};
 
 
   function initMap() {
-    var myLatLong = {lat: 47.6792, lng: -122.3860};
 
     var map = new google.maps.Map(document.getElementById('map'), {
       center: myLatLong,
-      zoom: 14
+      zoom: 15
     });
     for (var loc = 0; loc < myLatLongArray.length; loc++){
       console.log(myLatLongArray[loc][0]);
       var location = myLatLongArray[loc];
       var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(location[0], location[1]),
+        position: new google.maps.LatLng(myLatLong),
         map: map,
         title: "Ohai, a marker!",
         animation: google.maps.Animation.DROP,
