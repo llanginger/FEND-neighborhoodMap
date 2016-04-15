@@ -103,6 +103,23 @@ nav li {
   display: block;
 }
 
+input, button, select {
+  margin-right: 20px;
+  margin-top: 10px;
+}
+
+select, button {
+  width: 131px;
+}
+
+select {
+  height: 200px;
+}
+
+button {
+  cursor: pointer;
+}
+
 .nav-bar ul a:hover {
   background: #333;
 }
@@ -117,5 +134,5 @@ nav li {
 }
 
 .wrapper.open {
-  transform: translateX(20%);
+  transform: translateX(230px);
 }

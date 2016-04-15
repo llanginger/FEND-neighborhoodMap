@@ -4,24 +4,11 @@ $(function(){
     $(".wrapper").toggleClass("open");
   });
 
-  var coffeeShops = [
-    {
-      name: "Ballard Coffee Works",
-      address: "address here",
-      rating: 4
-    },
-    {
-      name: "Cafe Fiore",
-      address: "address here",
-      rating: 3
-    },
-    {
-      name: "Might O's",
-      address: "address here",
-      rating: 2
-    },
-  ];
-  // console.log(coffeeShops[0].name);
+  // $("#search-now").on("click", function(){
+  //   ViewModel.fourSquareApiCall();
+  // })
+
+
 
   var CoffeeShop = function(data){
     this.name = ko.observable(data.name);
@@ -29,67 +16,91 @@ $(function(){
     this.rating = ko.observable(data.rating);
   };
 
+
+  // var fourSquareResults = [];
+
+
   var ViewModel = function(){
     var self = this;
-    this.coffeeShopList = ko.observableArray([]);
+
+    // 4sqr section:
+
+    this.searchLocation = ko.observable("ballard, wa");
+    this.searchCategory = ko.observable("coffee");
+    this.resultLimit = ko.observable(10);
+    this.fourSquareResults = ko.observableArray([]);
+    // this.itemsToAdd = ko.observable("");
 
 
-    coffeeShops.forEach(function(coffeeShop){
-      self.coffeeShopList.push(new CoffeeShop(coffeeShop))
-    });
+    this.selectedItems = ko.observableArray([]);
 
-    this.currentCoffeeShop = ko.observable(this.coffeeShopList()[0]);
+    this.removeSelected = function(){
+      self.fourSquareResults.removeAll(self.selectedItems());
+      self.selectedItems([]);
+    }
+
+    this.fourSquareApiCall = function(){
+      self.fourSquareResults([]);
+      var fourSqSettings = {
+        baseUrl: "https://api.foursquare.com/v2/venues/search?",
+        clientID: "&client_id=" + "WGMJMEF5PGBY0Z2VPGOTUV4IZWYTZS5V1E0TPIJHBSHRXNWS",
+        clientSecret: "&client_secret=" + "MPIRWAHDMNBZVY2LSAVR1Y0WLQEP5SLDQHIXJZLVFILJHJDQ",
+        loc: "near=" + self.searchLocation(),
+        cat: "&query=" + self.searchCategory(),
+        limit: "&limit=" + self.resultLimit(),
+      };
+
+      var fourSq_URL =
+        fourSqSettings.baseUrl + fourSqSettings.loc + fourSqSettings.clientID + fourSqSettings.clientSecret + "&v=20130815" + fourSqSettings.cat + fourSqSettings.limit;
+
+      $.ajax(fourSq_URL)
+        .fail(function(data){
+          console.log("Failed 4square request");
+        })
+        .done(function(data){
+          console.log(data);
+          var venues = data.response.venues;
+          for (var venue in venues){
+            // console.log(venues[i].name);
+            self.fourSquareResults.push({
+              name: venues[venue].name,
+              lat: venues[venue].location.lat,
+              lng: venues[venue].location.lng
+            });
 
 
-  }
-    ko.applyBindings(new ViewModel);
-
-  var searchLocation = "ballard, wa";
-  var searchCategory = "coffee";
-  var fourSquareResults = [];
-
-  var fourSquareApiCall = function(){
-
-    var fourSqSettings = {
-      baseUrl: "https://api.foursquare.com/v2/venues/search?",
-      clientID: "WGMJMEF5PGBY0Z2VPGOTUV4IZWYTZS5V1E0TPIJHBSHRXNWS",
-      clientSecret: "MPIRWAHDMNBZVY2LSAVR1Y0WLQEP5SLDQHIXJZLVFILJHJDQ",
-      loc: "near=" + searchLocation,
-      cat: "&query=" + searchCategory,
-      limit: "&limit=" + 5
-    };
-
-    // var fourSqData = {
-    //   name: response.venues
-    // }
-
-    var fourSq_URL =
-      fourSqSettings.baseUrl + fourSqSettings.loc + "&client_id="+ fourSqSettings.clientID + "&client_secret=" + fourSqSettings.clientSecret + "&v=20130815" + fourSqSettings.cat + fourSqSettings.limit;
-
-    $.ajax(fourSq_URL)
-      .fail(function(data){
-        console.log("Failed 4square request");
-      })
-      .done(function(data){
-        console.log(data);
-        var venues = data.response.venues;
-        for (i in venues){
-          // console.log(venues[i].name);
-          fourSquareResults[i] = {
-            name: venues[i].name,
-            lat: venues[i].location.lat,
-            lng: venues[i].location.lng
+            // console.log(self.fourSquareResults()[venue].name);
           };
 
+<<<<<<< HEAD
         };
         console.log(fourSquareResults[0].lat);
         console.log(fourSquareResults);
 
       })
+||||||| merged common ancestors
+        };
+        console.log(fourSquareResults[0].lat);
+      })
+=======
+        })
 
-    console.log(fourSq_URL);
+        console.log(fourSq_URL);
+      };
+    // fourSquareApiCall();
+
+
+>>>>>>> master
+
   };
-  fourSquareApiCall();
+
+  ko.applyBindings(new ViewModel);
+
+
+
+
+
+
 
 })
 
@@ -97,6 +108,45 @@ $(function(){
 // var gLat = fourSquareResults[0];
 // var gLng = fourSquareResults[0];
 // console.log(fourSquareResults);
+
+// ko.bindingHandlers.map = {
+//   init: function(element, valueAccessor, allBindingsAccessor, ViewModel) {
+//     var mapObj = ko.utils.unwrapObservable(valueAccessor());
+//     var latLng = new google.maps.latLng(
+//       ko.utils.unwrapObservable(mapObj.lat),
+//       ko.utils.unwrapObservable(mapObj.lng));
+//     var mapOptions = {
+//       center: latLng(),
+//       zoom: 14
+//     };
+//     mapObj.googleMap = new google.maps.Map(element, mapOptions);
+//     mapObj.marker = new google.maps.Marker({
+//       map: mapObj.googleMap,
+//       position: latLng,
+//       title: "New Marker!",
+//       draggable: true
+//     });
+//     mapObj.onChangedCoord = function(newValue) {
+//       var latLng = new google.maps.LatLng(
+//           ko.utils.unwrapObservable(mapObj.lat),
+//           ko.utils.unwrapObservable(mapObj.lng));
+//           mapObj.googleMap.setCenter(latLng);
+//       };
+//
+//     mapObj.onMarkerMoved = function(dragEnd) {
+//       var latLng = mapObj.marker.getPosition();
+//       mapObj.lat(latLng.lat());
+//       mapObj.lng(latLng.lng());
+//     };
+//
+//     mapObj.lat.subscribe(mapObj.onChangedCoord);
+//     mapObj.lng.subscribe(mapObj.onChangedCoord);
+//
+//     google.maps.event.addListener(mapObj.marker, 'dragend', mapObj.onMarkerMoved);
+//
+//     $("#" + element.getAttribute("id")).data("mapObj",mapObj);
+//   }
+// }
 
 
 
