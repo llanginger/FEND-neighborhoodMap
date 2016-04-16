@@ -1,3 +1,8 @@
+// TODO:  Check out jquerymobile for mobile styling.
+//        Look into localstorage so that options persist.
+//        Learn how to get the google map working.
+//        Style.
+
 $(function(){
 
   $(".nav-toggle").on("click", function(){
@@ -23,22 +28,51 @@ $(function(){
   var ViewModel = function(){
     var self = this;
 
-    // 4sqr section:
-
+    // 4-SQR SECTION:
     this.searchLocation = ko.observable("ballard, wa");
     this.searchCategory = ko.observable("coffee");
+    this.resultName = ko.observable();
     this.resultLimit = ko.observable(10);
     this.fourSquareResults = ko.observableArray([]);
-    // this.itemsToAdd = ko.observable("");
-
 
     this.selectedItems = ko.observableArray([]);
+
+    this.currentItem = ko.observable();
 
     this.removeSelected = function(){
       self.fourSquareResults.removeAll(self.selectedItems());
       self.selectedItems([]);
       console.log(self.fourSquareResults()[0].name);
     }
+
+    this.displayRandom = function(){
+      var ranNum = Math.floor(Math.random() * self.fourSquareResults().length);
+      self.currentItem(self.fourSquareResults()[ranNum]);
+      var newLat = self.currentItem().lat;
+      var newLng = self.currentItem().lng;
+      self.resultName(self.currentItem().name);
+      console.log(self.resultName());
+      console.log(self.currentItem());
+      myLatLong = {lat: newLat, lng: newLng};
+      // console.log(myLatLong);
+      map.panTo(myLatLong);
+      if (!marker) {
+        marker = new google.maps.Marker({
+            position: myLatLong,
+            map: map,
+            title: "Ohai, a marker!",
+            animation: google.maps.Animation.DROP,
+        });
+      } else {
+        marker.setPosition(myLatLong);
+      };
+      marker.addListener('click', toggleBounce);
+      if (infoWindow) {infoWindow.close()};
+      infoWindow = new google.maps.InfoWindow({
+          content: '<div id="content">' + '<h1 id="firstHeading" class="firstHeading">' + self.resultName() + '</h1>' + '</div>'
+      });
+      infoWindow.open(map, marker, this);
+    };
 
     this.fourSquareApiCall = function(){
       self.fourSquareResults([]);
@@ -68,19 +102,10 @@ $(function(){
               lat: venues[venue].location.lat,
               lng: venues[venue].location.lng
             });
-
-
             // console.log(self.fourSquareResults()[venue].name);
           };
-
         })
-
-        console.log(fourSq_URL);
       };
-    // fourSquareApiCall();
-
-
-
   };
 
   ko.applyBindings(new ViewModel);
@@ -137,64 +162,46 @@ $(function(){
 
 // Google Maps code:
 var myLatLongArray = [[47.6792, -122.3860]];
+var myLatLong = {lat: 47.6792, lng: -122.3860};
+var map;
+var marker;
+var infoWindow;
+// var contentString =
+//     '<div id="content">' +
+//     '<div id="siteNotice">' +
+//     '</div>' +
+//     '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
+//     '<div id="bodyContent">' +
+//     '</div>' +
+//     '</div>';
 
 
-  function initMap() {
-    var myLatLong = {lat: 47.6792, lng: -122.3860};
 
-    var map = new google.maps.Map(document.getElementById('map'), {
-      center: myLatLong,
-      zoom: 14
-    });
-    for (var loc = 0; loc < myLatLongArray.length; loc++){
-      console.log(myLatLongArray[loc][0]);
-      var location = myLatLongArray[loc];
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(location[0], location[1]),
-        map: map,
-        title: "Ohai, a marker!",
-        animation: google.maps.Animation.DROP,
-      });
-    }
-  // marker.addListener('click', function(){
-  //   infoWindow.open(map, marker);
-  // });
-
-  marker.addListener('click', toggleBounce);
-
-  function toggleBounce() {
-    if (marker.getAnimation() !== null) {
+function toggleBounce() {
+  if (marker.getAnimation() !== null) {
       marker.setAnimation(null);
-    } else {
+  } else {
       marker.setAnimation(google.maps.Animation.BOUNCE);
-    }
   }
-  var contentString = '<div id="content">'+
-      '<div id="siteNotice">'+
-      '</div>'+
-      '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
-      '<div id="bodyContent">'+
-      '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
-      'sandstone rock formation in the southern part of the '+
-      'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
-      'south west of the nearest large town, Alice Springs; 450&#160;km '+
-      '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
-      'features of the Uluru - Kata Tjuta National Park. Uluru is '+
-      'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
-      'Aboriginal people of the area. It has many springs, waterholes, '+
-      'rock caves and ancient paintings. Uluru is listed as a World '+
-      'Heritage Site.</p>'+
-      '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
-      'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
-      '(last visited June 22, 2009).</p>'+
-      '</div>'+
-      '</div>';
-  var infoWindow = new google.maps.InfoWindow({
-    content: contentString
-  })
 }
 
+  function initMap() {
 
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: myLatLong,
+      zoom: 15
+    });
+
+    // marker.addListener('click', function(){
+    //   infoWindow.open(map, marker);
+    // });
+
+    // marker.addListener('click', toggleBounce);
+
+
+
+
+}
 
 
 
