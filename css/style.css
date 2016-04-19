@@ -35,6 +35,14 @@ html, body {
   z-index: 1;
 }
 
+#content {
+  text-align: center;
+}
+/*This sets the close button on the infowindow to "display none". Not sure about this.*/
+.gm-style-iw + div {
+  display: none;
+}
+
 .blue {
   height: 75px;
   width: 75px;
@@ -123,7 +131,7 @@ button {
   position: absolute;
   width: 150px;
   height: 50px;
-  top: 80%;
+  top: 90%;
   margin-left: -75px;
   left: 50%;
   background: #333;
@@ -155,5 +163,5 @@ button:focus {outline:0;}
 }
 
 .wrapper.open {
-  transform: translateX(230px);
+  transform: translateX(630px);
 }

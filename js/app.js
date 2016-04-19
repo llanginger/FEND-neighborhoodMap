@@ -11,8 +11,18 @@ $(function(){
 
   $("#display-random").on("click", function(){
     $(".wrapper").toggleClass("open");
+
   });
 
+  $("#main-button").on("click", function(){
+    $(".default-slider").unslider();
+  })
+
+
+
+  // $(".automatic-slider").unslider({
+  //   autoplay: true
+  // });
 
 
 
@@ -56,35 +66,43 @@ $(function(){
     }
 
     this.displayRandom = function(){
+
+      // generate a unique random number for use in indexing
       var ranNum = Math.floor(Math.random() * self.fourSquareResults().length);
 
       // Placeholder image code. TODO: replace this
       var photoSrc = "https://irs0.4sqi.net/img/general/300x200/2341723_vt1Kr-SfmRmdge-M7b4KNgX2_PHElyVbYL65pMnxEQw.jpg/"
 
+      // set the contents of currentItem to be the 4-SQR result at [ranNum]
       self.currentItem(self.fourSquareResults()[ranNum]);
 
+      // set the lat/lng for use within the scope of this function
       var newLat = self.currentItem().lat;
       var newLng = self.currentItem().lng;
+
 
       self.resultName(self.currentItem().name);
       self.resultId(self.currentItem().id);
       self.fourSqSettings().id = self.currentItem().id;
 
+          // some console logs
+          // console.log(self.resultName());
+          // console.log(self.currentItem());
+          // console.log(self.resultId());
+          // console.log(fourSqPhoto_URL);
+          // console.log(self.fourSqSettings());
 
-          console.log(self.resultName());
-          console.log(self.currentItem());
-          console.log(self.resultId());
-          console.log(fourSqPhoto_URL);
-          console.log(self.fourSqSettings());
-
+      // set myLatLong to be an object with currentItem[ranNum].lat/lng as its properties
       myLatLong = {lat: newLat, lng: newLng};
-          // console.log(myLatLong);
 
 
+      // pan map to myLatLong
       map.panTo(myLatLong);
+
+      // create a new marker if there is none, otherwise move the existing one
       if (!marker) {
         marker = new google.maps.Marker({
-            position: myLatLong,
+            // position: myLatLong,
             map: map,
             title: "Ohai, a marker!",
             animation: google.maps.Animation.DROP,
@@ -92,13 +110,43 @@ $(function(){
       } else {
         marker.setPosition(myLatLong);
       };
-      marker.addListener('click', toggleBounce);
+
+      // if there's already an infowindow, close it before moving on
       if (infoWindow) {infoWindow.close()};
+
+      // declare the content of the infowindow
       infoWindow = new google.maps.InfoWindow({
-          content: '<div id="content">' + "<img src='http://placehold.it/400x250'/>" + '<h1 id="firstHeading" class="firstHeading">' + self.resultName() + '</h1>' + '</div>'
+        content:
+          "<div id='content'>" +
+            "<div class='default-slider'>" +
+              "<ul>" +
+                "<li><img src='photos/250.jpeg' /></li>" +
+                "<li><img src='photos/287.jpg' /></li>" +
+                "<li><img src='photos/300.jpeg' /></li>" +
+              "</ul>" +
+            "</div>" +
+            "<h1 id='firstHeading' class='firstHeading'>" + self.resultName() +
+            "</h1>" +
+          "</div>"
       });
+      // THIS IS THE BIT THAT'S CONFUSING ME AAAAAAAHHHH
+      // google.maps.event.addListener(marker, "click", function(){
+      google.maps.event.addListener(marker, "position_changed", function(){
+        console.log("Info Open");
+        console.log(marker.position);
+        $(".default-slider").unslider({
+          autoplay: true,
+          speed: 1000
+        });
+      });
+
+      marker.setPosition(myLatLong);
+
+      // open the new infowindow
       infoWindow.open(map, marker, this);
-      mapRecenter(myLatLong, 0, -100);
+
+      // adjust the map's "center"
+      mapRecenter(myLatLong, 0, -150);
     };
 
     var mapRecenter = function(latlng,offsetx,offsety) {
@@ -156,57 +204,8 @@ $(function(){
       //     self.fourSqPhotos([]);
       // }
   };
-
   ko.applyBindings(new ViewModel);
-
-
-
-
-
-
-
 })
-
-
-// ko.bindingHandlers.map = {
-//   init: function(element, valueAccessor, allBindingsAccessor, ViewModel) {
-//     var mapObj = ko.utils.unwrapObservable(valueAccessor());
-//     var latLng = new google.maps.latLng(
-//       ko.utils.unwrapObservable(mapObj.lat),
-//       ko.utils.unwrapObservable(mapObj.lng));
-//     var mapOptions = {
-//       center: latLng(),
-//       zoom: 14
-//     };
-//     mapObj.googleMap = new google.maps.Map(element, mapOptions);
-//     mapObj.marker = new google.maps.Marker({
-//       map: mapObj.googleMap,
-//       position: latLng,
-//       title: "New Marker!",
-//       draggable: true
-//     });
-//     mapObj.onChangedCoord = function(newValue) {
-//       var latLng = new google.maps.LatLng(
-//           ko.utils.unwrapObservable(mapObj.lat),
-//           ko.utils.unwrapObservable(mapObj.lng));
-//           mapObj.googleMap.setCenter(latLng);
-//       };
-//
-//     mapObj.onMarkerMoved = function(dragEnd) {
-//       var latLng = mapObj.marker.getPosition();
-//       mapObj.lat(latLng.lat());
-//       mapObj.lng(latLng.lng());
-//     };
-//
-//     mapObj.lat.subscribe(mapObj.onChangedCoord);
-//     mapObj.lng.subscribe(mapObj.onChangedCoord);
-//
-//     google.maps.event.addListener(mapObj.marker, 'dragend', mapObj.onMarkerMoved);
-//
-//     $("#" + element.getAttribute("id")).data("mapObj",mapObj);
-//   }
-// }
-
 
 
 // Google Maps code:
@@ -215,14 +214,6 @@ var myLatLong = {lat: 47.6792, lng: -122.3860};
 var map;
 var marker;
 var infoWindow;
-// var contentString =
-//     '<div id="content">' +
-//     '<div id="siteNotice">' +
-//     '</div>' +
-//     '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
-//     '<div id="bodyContent">' +
-//     '</div>' +
-//     '</div>';
 
 
 
@@ -241,6 +232,12 @@ function toggleBounce() {
       zoom: 15
     });
 
+    infoWindow = new google.maps.InfoWindow();
+
+
+    // google.maps.event.clearListeners(map, 'center_changed');
+
+
     // marker.addListener('click', function(){
     //   infoWindow.open(map, marker);
     // });
@@ -251,6 +248,7 @@ function toggleBounce() {
 
 
 }
+
 
 
 
