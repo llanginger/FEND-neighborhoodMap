@@ -31,8 +31,8 @@
             <li><a href="#">What are you in the mood for?</a></li>
             <li></span></li>
 
-            <li><input id="category" data-bind="value: searchCategory, valueUpdate: 'input'" /></li>
-            <li><input id="location" data-bind="value: searchLocation, valueUpdate: 'input'" /></li>
+            <li><input id="category" data-bind="value: searchCategory(), valueUpdate: 'input'" /></li>
+            <li><input id="location" data-bind="value: searchLocation(), valueUpdate: 'input'" /></li>
             <li><button id="search-now" data-bind="click: fourSquareApiCall">Search Now</button></li>
             <li>
               <select multiple="multiple" height="7" data-bind="options: fourSquareResults, optionsText: 'name', selectedOptions: selectedItems">

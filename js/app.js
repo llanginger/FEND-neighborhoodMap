@@ -110,6 +110,7 @@ $(function(){
     }
 
     this.fourSquareApiCall = function(){
+      console.log(self.fourSqSettings().loc)
       console.log(fourSqSearch_URL)
       // Empty results array:
       self.fourSquareResults([]);
