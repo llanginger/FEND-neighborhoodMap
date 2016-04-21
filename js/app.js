@@ -61,8 +61,8 @@ $(function(){
     this.googleMap = map;
 
     // 4-SQR SECTION:
-    this.searchLocation = ko.observable("ballard, wa");
-    this.searchCategory = ko.observable("coffee");
+    this.searchLocation = ko.observable();
+    this.searchCategory = ko.observable();
     this.resultName = ko.observable();
     this.resultId = ko.observableArray([]);
     this.resultLimit = ko.observable(10);
@@ -89,7 +89,13 @@ $(function(){
 
 
     var fourSqSearch_URL =
-      self.fourSqSettings().baseUrl + self.fourSqSettings().search + self.fourSqSettings().loc + "&" +  self.fourSqSettings().clientID + self.fourSqSettings().clientSecret + "&v=20130815" + self.fourSqSettings().cat + self.fourSqSettings().limit;
+      self.fourSqSettings().baseUrl +
+      self.fourSqSettings().search +
+      self.fourSqSettings().loc + "&" +
+      self.fourSqSettings().clientID +
+      self.fourSqSettings().clientSecret + "&v=20130815" +
+      self.fourSqSettings().cat +
+      self.fourSqSettings().limit;
 
 
 
