@@ -163,5 +163,5 @@ button:focus {outline:0;}
 }
 
 .wrapper.open {
-  transform: translateX(630px);
+  transform: translateX(230px);
 }

@@ -3,6 +3,34 @@
 //        Learn how to get the google map working.
 //        Style.
 
+// Google Maps code:
+var myLatLongArray = [[47.6792, -122.3860]];
+var myLatLong = {lat: 47.6792, lng: -122.3860};
+var map;
+var marker;
+var infoWindow;
+
+function initMap() {
+
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: myLatLong,
+    zoom: 15
+  });
+
+  infoWindow = new google.maps.InfoWindow();
+
+}
+
+function toggleBounce() {
+  if (marker.getAnimation() !== null) {
+      marker.setAnimation(null);
+  } else {
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+  }
+}
+
+var michaelId;
+
 $(function(){
 
   $(".nav-toggle").on("click", function(){
@@ -32,14 +60,17 @@ $(function(){
   var ViewModel = function(){
     var self = this;
 
+    this.googleMap = map;
+
     // 4-SQR SECTION:
     this.searchLocation = ko.observable("ballard, wa");
     this.searchCategory = ko.observable("coffee");
     this.resultName = ko.observable();
-    this.resultId = ko.observable();
+    this.resultId = ko.observableArray([]);
     this.resultLimit = ko.observable(10);
     this.fourSquareResults = ko.observableArray([]);
     this.fourSqPhotos = ko.observableArray([]);
+    this.currentPhoto = ko.observable();
 
     this.selectedItems = ko.observableArray([]);
 
@@ -54,10 +85,17 @@ $(function(){
       cat: "&query=" + self.searchCategory(),
       limit: "&limit=" + self.resultLimit()
     });
+
+
+
     var fourSqSearch_URL =
       self.fourSqSettings().baseUrl + self.fourSqSettings().search + self.fourSqSettings().loc + "&" +  self.fourSqSettings().clientID + self.fourSqSettings().clientSecret + "&v=20130815" + self.fourSqSettings().cat + self.fourSqSettings().limit;
 
-    var fourSqPhoto_URL = self.fourSqSettings().baseUrl + "40b3de00f964a52026001fe3" + "/photos?" + self.fourSqSettings().clientID + self.fourSqSettings().clientSecret + "&v=20130815";
+
+
+    var fourSqPhoto_URL;
+
+    var fourSqPhotoString;
 
 
     this.removeSelected = function(){
@@ -71,7 +109,7 @@ $(function(){
       var ranNum = Math.floor(Math.random() * self.fourSquareResults().length);
 
       // Placeholder image code. TODO: replace this
-      var photoSrc = "https://irs0.4sqi.net/img/general/300x200/2341723_vt1Kr-SfmRmdge-M7b4KNgX2_PHElyVbYL65pMnxEQw.jpg/"
+      // var photoSrc = "https://irs0.4sqi.net/img/general/300x200/2341723_vt1Kr-SfmRmdge-M7b4KNgX2_PHElyVbYL65pMnxEQw.jpg/"
 
       // set the contents of currentItem to be the 4-SQR result at [ranNum]
       self.currentItem(self.fourSquareResults()[ranNum]);
@@ -102,7 +140,7 @@ $(function(){
       // create a new marker if there is none, otherwise move the existing one
       if (!marker) {
         marker = new google.maps.Marker({
-            // position: myLatLong,
+            position: myLatLong,
             map: map,
             title: "Ohai, a marker!",
             animation: google.maps.Animation.DROP,
@@ -120,9 +158,7 @@ $(function(){
           "<div id='content'>" +
             "<div class='default-slider'>" +
               "<ul>" +
-                "<li><img src='photos/250.jpeg' /></li>" +
-                "<li><img src='photos/287.jpg' /></li>" +
-                "<li><img src='photos/300.jpeg' /></li>" +
+                "<li><img src='" + fourSqPhotoString + "' /></li>" +
               "</ul>" +
             "</div>" +
             "<h1 id='firstHeading' class='firstHeading'>" + self.resultName() +
@@ -131,14 +167,14 @@ $(function(){
       });
       // THIS IS THE BIT THAT'S CONFUSING ME AAAAAAAHHHH
       // google.maps.event.addListener(marker, "click", function(){
-      google.maps.event.addListener(marker, "position_changed", function(){
-        console.log("Info Open");
-        console.log(marker.position);
-        $(".default-slider").unslider({
-          autoplay: true,
-          speed: 1000
-        });
-      });
+      // google.maps.event.addListener(marker, "position_changed", function(){
+      //   console.log("Info Open");
+      //   console.log(marker.position);
+      //   $(".default-slider").unslider({
+      //     autoplay: true,
+      //     speed: 1000
+      //   });
+      // });
 
       marker.setPosition(myLatLong);
 
@@ -172,7 +208,7 @@ $(function(){
           console.log("Failed 4square request");
         })
         .done(function(data){
-          // console.log(data);
+          console.log(data);
           var venues = data.response.venues;
           for (var venue in venues){
             self.fourSquareResults.push({
@@ -181,73 +217,58 @@ $(function(){
               lng: venues[venue].location.lng,
               id: venues[venue].id
             });
+            self.resultId.push(
+              venues[venue].id
+            );
           };
+          console.log(self.resultId()[0]);
+          fourSqPhoto_URL = self.fourSqSettings().baseUrl + self.resultId()[0] + "/photos?" + self.fourSqSettings().clientID + self.fourSqSettings().clientSecret + "&v=20130815";
+          console.log(fourSqPhoto_URL);
+
         })
       };
-      // this.fourSquarePhotoCall = function(){
-      //
-      //
-      //   // self.currentItem().id = "";
-      //   $.ajax(fourSqPhoto_URL)
-      //     .fail(function(data){
-      //       console.log("Failed 4square photo request");
-      //     })
-      //     .done(function(data){
-      //       var photos = data.response.photos.items;
-      //       for (var photo in photos){
-      //         self.fourSqPhotos.push({
-      //           photoId: photos[photo].id
-      //         });
-      //       }
-      //     })
-      //     console.log(self.fourSqPhotos());
-      //     self.fourSqPhotos([]);
-      // }
+    this.fourSquarePhotoCall = function(){
+      console.log(self.resultId()[0]);
+      console.log(fourSqPhoto_URL);
+
+
+      // self.currentItem().id = "";
+      $.ajax(fourSqPhoto_URL)
+        .fail(function(data){
+          console.log("Failed 4square photo request");
+          console.log(self.resultId()[0]);
+
+        })
+        .done(function(data){
+          console.log(data);
+          var photos = data.response.photos.items;
+          for (var photo in photos){
+            self.fourSqPhotos.push({
+              prefix: photos[photo].prefix,
+              suffix: photos[photo].suffix,
+            });
+          };
+          self.currentPhoto(self.fourSqPhotos()[0]);
+          fourSqPhotoString = self.currentPhoto().prefix + "300x200" + self.currentPhoto().suffix;
+          console.log(fourSqPhotoString);
+        })
+        console.log(self.fourSqPhotos());
+
+        self.fourSqPhotos([]);
+      }
   };
+
   ko.applyBindings(new ViewModel);
 })
 
 
-// Google Maps code:
-var myLatLongArray = [[47.6792, -122.3860]];
-var myLatLong = {lat: 47.6792, lng: -122.3860};
-var map;
-var marker;
-var infoWindow;
-
-
-
-function toggleBounce() {
-  if (marker.getAnimation() !== null) {
-      marker.setAnimation(null);
-  } else {
-      marker.setAnimation(google.maps.Animation.BOUNCE);
-  }
-}
-
-  function initMap() {
-
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: myLatLong,
-      zoom: 15
-    });
-
-    infoWindow = new google.maps.InfoWindow();
-
-
-    // google.maps.event.clearListeners(map, 'center_changed');
-
-
-    // marker.addListener('click', function(){
-    //   infoWindow.open(map, marker);
-    // });
-
-    // marker.addListener('click', toggleBounce);
 
 
 
 
-}
+
+
+
 
 
 

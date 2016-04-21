@@ -24,7 +24,7 @@
 
 <body>
   <div class="wrapper">
-    <button id="main-button" data-bind="click: displayRandom">Show Me Another!</button>
+    <button id="main-button" data-bind="click: function() {displayRandom(), fourSquarePhotoCall()}">Show Me Another!</button>
     <div class="header">
       <h1 class="site-title">Take me Somewhere New!</h1>
       <i class="fa fa-bars nav-toggle"></i>
@@ -42,9 +42,9 @@
             </li>
 
             <li><button id="remove-item" data-bind="click: removeSelected, enable: selectedItems().length > 0">Remove</button></a></li>
-            <li><button id="display-random" data-bind="click: displayRandom">Let's Go!</button></li>
+            <li><button id="display-random" data-bind="click: function() {displayRandom(), fourSquarePhotoCall()}">Let's Go!</button></li>
 
-          
+
 
             <li><a href="#">Contact Us</a></li>
         </ul>
