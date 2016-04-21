@@ -24,7 +24,7 @@
 
 <body>
   <div class="wrapper">
-    <button id="main-button" data-bind="click: function() {displayRandom(), fourSquarePhotoCall()}">Show Me Another!</button>
+    <button id="main-button" data-bind="click: displayRandom">Show Me Another!</button>
     <div class="header">
       <h1 class="site-title">Take me Somewhere New!</h1>
       <i class="fa fa-bars nav-toggle"></i>
@@ -33,8 +33,8 @@
             <li><a href="#">What are you in the mood for?</a></li>
             <li></span></li>
 
-            <li><input id="category" onfocus="if(this.value == 'Category') { this.value = ''; }" onblur="if(this.value == '') {this.value = 'Category'}" data-bind="value: searchCategory"/></li>
-            <li><input id="location" onfocus="if(this.value == 'Location') { this.value = ''; }" onblur="if(this.value == '') {this.value = 'Location'}" data-bind="value: searchLocation" /></li>
+            <li><input id="category" data-bind="value: searchCategory" /></li>
+            <li><input id="location" data-bind="value: searchLocation" /></li>
             <li><button id="search-now" data-bind="click: fourSquareApiCall">Search Now</button></li>
             <li>
               <select multiple="multiple" height="7" data-bind="options: fourSquareResults, optionsText: 'name', selectedOptions: selectedItems">
@@ -42,7 +42,7 @@
             </li>
 
             <li><button id="remove-item" data-bind="click: removeSelected, enable: selectedItems().length > 0">Remove</button></a></li>
-            <li><button id="display-random" data-bind="click: function() {displayRandom(), fourSquarePhotoCall()}">Let's Go!</button></li>
+            <li><button id="display-random" data-bind="click: displayRandom">Let's Go!</button></li>
 
 
 

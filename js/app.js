@@ -29,7 +29,7 @@ function toggleBounce() {
   }
 }
 
-var michaelId;
+
 
 $(function(){
 
@@ -72,6 +72,8 @@ $(function(){
     this.fourSqPhotos = ko.observableArray([]);
     this.currentPhoto = ko.observable();
 
+    this.photoArray = ko.observableArray([]);
+
     this.selectedItems = ko.observableArray([]);
 
     this.currentItem = ko.observable({});
@@ -93,7 +95,7 @@ $(function(){
 
 
 
-    var fourSqPhoto_URL;
+    // var fourSqPhoto_URL;
 
     var fourSqPhotoString;
 
@@ -103,13 +105,67 @@ $(function(){
       self.selectedItems([]);
     }
 
+    this.fourSquareApiCall = function(){
+      console.log(fourSqSearch_URL)
+      // Empty results array:
+      self.fourSquareResults([]);
+      // Request info from Foursqaure:
+      $.ajax(fourSqSearch_URL)
+        .fail(function(data){
+          console.log("Failed 4square request");
+        })
+        .done(function(data){
+          console.log(data);
+          var venues = data.response.venues;
+          for (var venue in venues){
+            console.log(venues[venue].id);
+
+
+            $.ajax({
+              url: self.fourSqSettings().baseUrl + venues[venue].id + "/photos?" + self.fourSqSettings().clientID + self.fourSqSettings().clientSecret + "&v=20130815"
+              })
+                .fail(function(photoData){
+                  console.log("Failed 4square photo request");
+                  console.log(self.resultId()[0]);
+                })
+                .done(function(photoData){
+                  console.log(photoData);
+                  var photos = photoData.response.photos.items;
+                  // self.fourSquareResults.push({
+                  //   name: venues[venue].name,
+                  //   lat: venues[venue].location.lat,
+                  //   lng: venues[venue].location.lng,
+                  //   id: venues[venue].id,
+                  //   photoString: photos[0].prefix + "300x200" + photos[0].suffix
+                  // });
+                  for (var photo in photos){
+                    self.fourSquareResults()[photo]["photoString"] = photos[photo].prefix + "300x200" + photos[photo].suffix;
+                    console.log(self.fourSquareResults());
+
+                  }
+                  // console.log(self.photoArray()[0].url);
+
+                })
+
+            self.fourSquareResults.push({
+              name: venues[venue].name,
+              lat: venues[venue].location.lat,
+              lng: venues[venue].location.lng,
+              id: venues[venue].id
+              // photoString: self.photoArray().url
+            });
+
+          };
+          console.log(self.photoArray());
+          console.log(self.fourSquareResults());
+
+        })
+      };
+
     this.displayRandom = function(){
 
       // generate a unique random number for use in indexing
       var ranNum = Math.floor(Math.random() * self.fourSquareResults().length);
-
-      // Placeholder image code. TODO: replace this
-      // var photoSrc = "https://irs0.4sqi.net/img/general/300x200/2341723_vt1Kr-SfmRmdge-M7b4KNgX2_PHElyVbYL65pMnxEQw.jpg/"
 
       // set the contents of currentItem to be the 4-SQR result at [ranNum]
       self.currentItem(self.fourSquareResults()[ranNum]);
@@ -121,14 +177,16 @@ $(function(){
 
       self.resultName(self.currentItem().name);
       self.resultId(self.currentItem().id);
+      self.currentPhoto(self.currentItem().photoString);
       self.fourSqSettings().id = self.currentItem().id;
 
           // some console logs
           // console.log(self.resultName());
-          // console.log(self.currentItem());
+          console.log(self.currentItem());
           // console.log(self.resultId());
           // console.log(fourSqPhoto_URL);
           // console.log(self.fourSqSettings());
+          console.log(self.currentItem().photoString[0]);
 
       // set myLatLong to be an object with currentItem[ranNum].lat/lng as its properties
       myLatLong = {lat: newLat, lng: newLng};
@@ -158,7 +216,7 @@ $(function(){
           "<div id='content'>" +
             "<div class='default-slider'>" +
               "<ul>" +
-                "<li><img src='" + fourSqPhotoString + "' /></li>" +
+                "<li><img src='" + self.currentPhoto() + "' /></li>" +
               "</ul>" +
             "</div>" +
             "<h1 id='firstHeading' class='firstHeading'>" + self.resultName() +
@@ -199,63 +257,36 @@ $(function(){
       )));
     }
 
-    this.fourSquareApiCall = function(){
-      // Empty results array:
-      self.fourSquareResults([]);
-      // Request info from Foursqaure:
-      $.ajax(fourSqSearch_URL)
-        .fail(function(data){
-          console.log("Failed 4square request");
-        })
-        .done(function(data){
-          console.log(data);
-          var venues = data.response.venues;
-          for (var venue in venues){
-            self.fourSquareResults.push({
-              name: venues[venue].name,
-              lat: venues[venue].location.lat,
-              lng: venues[venue].location.lng,
-              id: venues[venue].id
-            });
-            self.resultId.push(
-              venues[venue].id
-            );
-          };
-          console.log(self.resultId()[0]);
-          fourSqPhoto_URL = self.fourSqSettings().baseUrl + self.resultId()[0] + "/photos?" + self.fourSqSettings().clientID + self.fourSqSettings().clientSecret + "&v=20130815";
-          console.log(fourSqPhoto_URL);
 
-        })
-      };
-    this.fourSquarePhotoCall = function(){
-      console.log(self.resultId()[0]);
-      console.log(fourSqPhoto_URL);
-
-
-      // self.currentItem().id = "";
-      $.ajax(fourSqPhoto_URL)
-        .fail(function(data){
-          console.log("Failed 4square photo request");
-          console.log(self.resultId()[0]);
-
-        })
-        .done(function(data){
-          console.log(data);
-          var photos = data.response.photos.items;
-          for (var photo in photos){
-            self.fourSqPhotos.push({
-              prefix: photos[photo].prefix,
-              suffix: photos[photo].suffix,
-            });
-          };
-          self.currentPhoto(self.fourSqPhotos()[0]);
-          fourSqPhotoString = self.currentPhoto().prefix + "300x200" + self.currentPhoto().suffix;
-          console.log(fourSqPhotoString);
-        })
-        console.log(self.fourSqPhotos());
-
-        self.fourSqPhotos([]);
-      }
+    // this.fourSquarePhotoCall = function(){
+    //   console.log(self.resultId()[0]);
+    //   console.log(fourSqPhoto_URL);
+    //
+    //
+    //   // self.currentItem().id = "";
+    //   $.ajax(fourSqPhoto_URL)
+    //     .fail(function(data){
+    //       console.log("Failed 4square photo request");
+    //       console.log(self.resultId()[0]);
+    //
+    //     })
+    //     .done(function(data){
+    //       console.log(data);
+    //       var photos = data.response.photos.items;
+    //       for (var photo in photos){
+    //         self.fourSqPhotos.push({
+    //           prefix: photos[photo].prefix,
+    //           suffix: photos[photo].suffix,
+    //         });
+    //       };
+    //       self.currentPhoto(self.fourSqPhotos()[0]);
+    //       fourSqPhotoString = self.currentPhoto().prefix + "300x200" + self.currentPhoto().suffix;
+    //       console.log(fourSqPhotoString);
+    //     })
+    //     console.log(self.fourSqPhotos());
+    //
+    //     self.fourSqPhotos([]);
+    //   }
   };
 
   ko.applyBindings(new ViewModel);
