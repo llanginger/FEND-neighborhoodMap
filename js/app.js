@@ -42,9 +42,7 @@ $(function(){
 
   });
 
-  $("#main-button").on("click", function(){
-    $(".default-slider").unslider();
-  })
+
 
 
 
