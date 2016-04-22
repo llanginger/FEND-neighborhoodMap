@@ -18,14 +18,7 @@ function initMap() {
 
   infoWindow = new google.maps.InfoWindow();
 
-}
 
-function toggleBounce() {
-  if (marker.getAnimation() !== null) {
-      marker.setAnimation(null);
-  } else {
-      marker.setAnimation(google.maps.Animation.BOUNCE);
-  }
 }
 
 
@@ -54,12 +47,10 @@ $(function(){
     this.resultId = ko.observableArray([]);
     this.resultLimit = ko.observable(10);
     this.fourSquareResults = ko.observableArray([]);
-    this.fourSqPhotos = ko.observableArray([]);
-    this.currentPhoto = ko.observable();
 
     this.selectedItems = ko.observableArray([]);
 
-    this.currentItem = ko.observable({});
+    this.currentItem = ko.observable();
 
     var fourSqPhotoString;
 
@@ -114,7 +105,7 @@ $(function(){
               lng: venues[venue].location.lng,
               id: venues[venue].id
             };
-
+            // call second foursquare api request, passing in the current resultObj
             fourSqPhotoCall(resultObj, fourSqSettings);
             console.log(resultObj);
 
@@ -124,7 +115,7 @@ $(function(){
 
         })
       };
-
+    // foursquare photo api request, loads array of photos into the resultObj from the first api
     var fourSqPhotoCall = function(obj, settings){
       $.ajax({
         url: settings.baseUrl + obj.id + "/photos?" + settings.clientID + settings.clientSecret + "&v=20130815"
@@ -177,7 +168,7 @@ $(function(){
 
       self.resultName(self.currentItem().name);
       self.resultId(self.currentItem().id);
-      self.currentPhoto(self.currentItem().photoString);
+      // self.currentPhoto(self.currentItem().photoString);
       fourSqSettings.id = self.currentItem().id;
 
           // some console logs
