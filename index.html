@@ -40,14 +40,21 @@
             <li><input id="location" data-bind="value: searchLocation" /></li>
             <li><button id="search-now" data-bind="click: fourSquareApiCall">Search Now</button></li>
             <li>
-              <label for="select-choice-0" class="select">Thing1</label>
-              <select name="select-choice-0" id="select-choice-0" multiple="multiple" height="7" data-bind="options: fourSquareResults, optionsText: 'name', selectedOptions: selectedItems">
+
+              <select multiple="multiple" height="7" data-bind="options: fourSquareResults, optionsText: 'name', selectedOptions: selectedItems">
               </select>
             </li>
 
             <li><button id="remove-item" data-bind="click: removeSelected, enable: selectedItems().length > 0">Remove</button></a></li>
             <li><button id="display-random" data-bind="click: displayRandom">Let's Go!</button></li>
             <li><a href="#">Contact Us</a></li>
+            <label for="select-choice-0" class="select">Shipping method:</label>
+<select name="select-choice-0" id="select-choice-0">
+  <option value="standard">Standard: 7 day</option>
+  <option value="rush">Rush: 3 days</option>
+  <option value="express">Express: next day</option>
+  <option value="overnight">Overnight</option>
+</select>
         </ul>
       </nav>
     </div>
