@@ -70,7 +70,6 @@ $(function(){
     this.fourSqPhotos = ko.observableArray([]);
     this.currentPhoto = ko.observable();
 
-    this.photoArray = ko.observableArray([]);
 
     this.selectedItems = ko.observableArray([]);
 
@@ -101,8 +100,6 @@ $(function(){
         limit: "&limit=" + self.resultLimit()
       };
 
-
-
       var fourSqSearch_URL =
         fourSqSettings.baseUrl +
         fourSqSettings.search +
@@ -124,50 +121,55 @@ $(function(){
         .done(function(data){
           console.log(data);
           var venues = data.response.venues;
+          var resultObj;
           for (var venue in venues){
-            console.log(venues[venue].id);
-
-
-            $.ajax({
-              url: fourSqSettings.baseUrl + venues[venue].id + "/photos?" + fourSqSettings.clientID + fourSqSettings.clientSecret + "&v=20130815"
-              })
-                .fail(function(photoData){
-                  console.log("Failed 4square photo request");
-                  console.log(self.resultId()[0]);
-                })
-                .done(function(photoData){
-                  console.log(photoData);
-                  var photos = photoData.response.photos.items;
-                  // self.fourSquareResults.push({
-                  //   name: venues[venue].name,
-                  //   lat: venues[venue].location.lat,
-                  //   lng: venues[venue].location.lng,
-                  //   id: venues[venue].id,
-                  //   photoString: photos[0].prefix + "300x200" + photos[0].suffix
-                  // });
-                  for (var photo in photos){
-                    self.fourSquareResults()[photo]["photoString"] = photos[photo].prefix + "300x200" + photos[photo].suffix;
-                    console.log(self.fourSquareResults());
-
-                  }
-                  // console.log(self.photoArray()[0].url);
-
-                })
-
-            self.fourSquareResults.push({
+            // console.log(venues[venue].id);
+            resultObj = {
               name: venues[venue].name,
               lat: venues[venue].location.lat,
               lng: venues[venue].location.lng,
               id: venues[venue].id
-              // photoString: self.photoArray().url
-            });
+            };
+
+            fourSqPhotoCall(resultObj, fourSqSettings);
+            console.log(resultObj);
+
+
 
           };
-          console.log(self.photoArray());
+
           console.log(self.fourSquareResults());
 
         })
       };
+
+    var fourSqPhotoCall = function(obj, settings){
+      $.ajax({
+        url: settings.baseUrl + obj.id + "/photos?" + settings.clientID + settings.clientSecret + "&v=20130815"
+        })
+        .fail(function(photoData){
+          console.log("Failed 4square photo request");
+          console.log(self.resultId()[0]);
+        })
+        .done(function(photoData){
+          console.log(photoData);
+          var photos = photoData.response.photos.items;
+          var photoArray = [];
+
+          for (var photo in photos){
+            photoArray.push(photos[photo].prefix + "300x200" + photos[photo].suffix);
+          }
+          if (photoArray.length > 0){
+            obj.photoString = photoArray;
+          } else {
+            obj.photoString = "images/noPhoto.jpg";
+          }
+        self.fourSquareResults().push(obj);
+
+        console.log(self.fourSquareResults());
+
+      })
+    };
 
     this.displayRandom = function(){
 
@@ -188,6 +190,7 @@ $(function(){
       fourSqSettings.id = self.currentItem().id;
 
           // some console logs
+          console.log(self.fourSquareResults());
           // console.log(self.resultName());
           console.log(self.currentItem());
           // console.log(self.resultId());
@@ -223,9 +226,9 @@ $(function(){
           "<div id='content'>" +
             "<div class='default-slider'>" +
               "<ul>" +
-                "<li><img src='" + self.currentPhoto() + "' class='image-slide'  /></li>" +
-                "<li><img src='" + self.currentPhoto() + "' class='image-slide'  /></li>" +
-                "<li><img src='" + self.currentPhoto() + "' class='image-slide'  /></li>" +
+                "<li><img src='" + self.currentItem().photoString[0] + "' class='image-slide'  /></li>" +
+                "<li><img src='" + self.currentItem().photoString[1] + "' class='image-slide'  /></li>" +
+                "<li><img src='" + self.currentItem().photoString[2] + "' class='image-slide'  /></li>" +
                 // "<li><img src='images/200.jpeg' class='image-slide' /></li>" +
                 // "<li><img src='images/250.jpeg' class='image-slide' /></li>" +
                 // "<li><img src='images/300.jpeg' class='image-slide' /></li>" +
@@ -236,17 +239,6 @@ $(function(){
           "</div>"
       });
 
-
-      // THIS IS THE BIT THAT'S CONFUSING ME AAAAAAAHHHH
-      // google.maps.event.addListener(marker, "click", function(){
-      // google.maps.event.addListener(marker, "position_changed", function(){
-      //   console.log("Info Open");
-      //   console.log(marker.position);
-      //   $(".default-slider").unslider({
-      //     autoplay: true,
-      //     speed: 1000
-      //   });
-      // });
 
       marker.setPosition(myLatLong);
 
@@ -327,3 +319,34 @@ $(function(){
 //   map: map,
 //   title: "my Info Window"
 // })
+// var fourSqPhotoCall = function(obj, settings){
+//   $.ajax({
+//     url: settings.baseUrl + obj.id + "/photos?" + settings.clientID + settings.clientSecret + "&v=20130815"
+//     })
+//       .fail(function(photoData){
+//         console.log("Failed 4square photo request");
+//         console.log(self.resultId()[0]);
+//       })
+//       .done(function(photoData){
+//         console.log(photoData);
+//         var photos = photoData.response.photos.items;
+//         var photoArray = [];
+//
+//         for (var photo in photos){
+//           photoArray.push(photos[photo].prefix + "300x200" + photos[photo].suffix)
+//           // obj.photoString = photos[photo].prefix + "300x200" + photos[photo].suffix;
+//           // console.log(photoArray);
+//         }
+//         if (photoArray.length > 0){
+//           obj.photoString = photoArray;
+//         } else {
+//           obj.photoString = "images/noPhoto.jpg";
+//         }
+//         self.fourSquareResults().push(obj);
+//
+//
+//         console.log(self.fourSquareResults());
+//
+//
+//       })
+//     };
