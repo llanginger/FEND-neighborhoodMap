@@ -119,6 +119,17 @@ select {
 button {
   cursor: pointer;
 }
+
+.unslider-arrow {
+  color: black;
+}
+
+#content{
+  width: 300px;
+}
+.image-slide {
+  width: 100%;
+}
 #main-button {
   position: absolute;
   width: 150px;

@@ -58,11 +58,11 @@ $(function(){
   var ViewModel = function(){
     var self = this;
 
-    this.googleMap = map;
+    // this.googleMap = map;
 
     // 4-SQR SECTION:
-    this.searchLocation = ko.observable();
-    this.searchCategory = ko.observable();
+    this.searchLocation = ko.observable("ballard");
+    this.searchCategory = ko.observable("donuts");
     this.resultName = ko.observable();
     this.resultId = ko.observableArray([]);
     this.resultLimit = ko.observable(10);
@@ -76,32 +76,11 @@ $(function(){
 
     this.currentItem = ko.observable({});
 
-    this.fourSqSettings = ko.observable({
-      baseUrl: "https://api.foursquare.com/v2/venues/",
-      search: "search?",
-      clientID: "client_id=" + "WGMJMEF5PGBY0Z2VPGOTUV4IZWYTZS5V1E0TPIJHBSHRXNWS",
-      clientSecret: "&client_secret=" + "MPIRWAHDMNBZVY2LSAVR1Y0WLQEP5SLDQHIXJZLVFILJHJDQ",
-      loc: "near=" + self.searchLocation(),
-      cat: "&query=" + self.searchCategory(),
-      limit: "&limit=" + self.resultLimit()
-    });
-
-
-
-    var fourSqSearch_URL =
-      self.fourSqSettings().baseUrl +
-      self.fourSqSettings().search +
-      self.fourSqSettings().loc + "&" +
-      self.fourSqSettings().clientID +
-      self.fourSqSettings().clientSecret + "&v=20130815" +
-      self.fourSqSettings().cat +
-      self.fourSqSettings().limit;
-
-
-
     // var fourSqPhoto_URL;
 
     var fourSqPhotoString;
+
+    var fourSqSettings = {};
 
 
     this.removeSelected = function(){
@@ -110,7 +89,30 @@ $(function(){
     }
 
     this.fourSquareApiCall = function(){
-      console.log(self.fourSqSettings().loc)
+      self.fourSquareResults([]);
+
+      fourSqSettings = {
+        baseUrl: "https://api.foursquare.com/v2/venues/",
+        search: "search?",
+        clientID: "client_id=" + "WGMJMEF5PGBY0Z2VPGOTUV4IZWYTZS5V1E0TPIJHBSHRXNWS",
+        clientSecret: "&client_secret=" + "MPIRWAHDMNBZVY2LSAVR1Y0WLQEP5SLDQHIXJZLVFILJHJDQ",
+        loc: "near=" + self.searchLocation(),
+        cat: "&query=" + self.searchCategory(),
+        limit: "&limit=" + self.resultLimit()
+      };
+
+
+
+      var fourSqSearch_URL =
+        fourSqSettings.baseUrl +
+        fourSqSettings.search +
+        fourSqSettings.loc + "&" +
+        fourSqSettings.clientID +
+        fourSqSettings.clientSecret + "&v=20130815" +
+        fourSqSettings.cat +
+        fourSqSettings.limit;
+
+      console.log(fourSqSettings.loc)
       console.log(fourSqSearch_URL)
       // Empty results array:
       self.fourSquareResults([]);
@@ -127,7 +129,7 @@ $(function(){
 
 
             $.ajax({
-              url: self.fourSqSettings().baseUrl + venues[venue].id + "/photos?" + self.fourSqSettings().clientID + self.fourSqSettings().clientSecret + "&v=20130815"
+              url: fourSqSettings.baseUrl + venues[venue].id + "/photos?" + fourSqSettings.clientID + fourSqSettings.clientSecret + "&v=20130815"
               })
                 .fail(function(photoData){
                   console.log("Failed 4square photo request");
@@ -183,14 +185,14 @@ $(function(){
       self.resultName(self.currentItem().name);
       self.resultId(self.currentItem().id);
       self.currentPhoto(self.currentItem().photoString);
-      self.fourSqSettings().id = self.currentItem().id;
+      fourSqSettings.id = self.currentItem().id;
 
           // some console logs
           // console.log(self.resultName());
           console.log(self.currentItem());
           // console.log(self.resultId());
           // console.log(fourSqPhoto_URL);
-          // console.log(self.fourSqSettings());
+          // console.log(fourSqSettings);
           console.log(self.currentItem().photoString[0]);
 
       // set myLatLong to be an object with currentItem[ranNum].lat/lng as its properties
@@ -221,13 +223,20 @@ $(function(){
           "<div id='content'>" +
             "<div class='default-slider'>" +
               "<ul>" +
-                "<li><img src='" + self.currentPhoto() + "' /></li>" +
+                "<li><img src='" + self.currentItem().photoString + "' class='image-slide'  /></li>" +
+                "<li><img src='" + self.currentPhoto() + "' class='image-slide'  /></li>" +
+                "<li><img src='" + self.currentPhoto() + "' class='image-slide'  /></li>" +
+                // "<li><img src='images/200.jpeg' class='image-slide' /></li>" +
+                // "<li><img src='images/250.jpeg' class='image-slide' /></li>" +
+                // "<li><img src='images/300.jpeg' class='image-slide' /></li>" +
               "</ul>" +
             "</div>" +
             "<h1 id='firstHeading' class='firstHeading'>" + self.resultName() +
             "</h1>" +
           "</div>"
       });
+
+
       // THIS IS THE BIT THAT'S CONFUSING ME AAAAAAAHHHH
       // google.maps.event.addListener(marker, "click", function(){
       // google.maps.event.addListener(marker, "position_changed", function(){
@@ -243,6 +252,10 @@ $(function(){
 
       // open the new infowindow
       infoWindow.open(map, marker, this);
+      $(".default-slider").unslider({
+          autoplay: true,
+          speed: 1000
+        });
 
       // adjust the map's "center"
       mapRecenter(myLatLong, 0, -150);
