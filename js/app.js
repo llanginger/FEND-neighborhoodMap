@@ -152,7 +152,7 @@ $(function(){
       var ranNum = Math.floor(Math.random() * self.fourSquareResults().length);
 
       // ensure the app can't return the same random venue twice in a row
-      if (ranNum == lastVenue){
+      if (ranNum == lastVenue && self.fourSquareResults().length > 1){
         while (ranNum == lastVenue){
           ranNum = Math.floor(Math.random() * self.fourSquareResults().length);
         }
