@@ -48,13 +48,15 @@
             <li><button id="remove-item" data-bind="click: removeSelected, enable: selectedItems().length > 0">Remove</button></a></li>
             <li><button id="display-random" data-bind="click: displayRandom">Let's Go!</button></li>
             <li><a href="#">Contact Us</a></li>
-            <label for="select-choice-0" class="select">Shipping method:</label>
-<select name="select-choice-0" id="select-choice-0">
-  <option value="standard">Standard: 7 day</option>
-  <option value="rush">Rush: 3 days</option>
-  <option value="express">Express: next day</option>
-  <option value="overnight">Overnight</option>
-</select>
+            <div class="ui-field-contain">
+  <label for="select-choice-1" class="select">Shipping method:</label>
+  <select name="select-choice-1" id="select-choice-1">
+    <option value="standard">Standard: 7 day</option>
+    <option value="rush">Rush: 3 days</option>
+    <option value="express">Express: next day</option>
+    <option value="overnight">Overnight</option>
+  </select>
+</div>
         </ul>
       </nav>
     </div>
