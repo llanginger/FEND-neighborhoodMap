@@ -235,6 +235,7 @@ $(function(){
       } else {
           $(".photo-slides").append("<li><img src='" + images + "' class='image-slide'  /></li>");
       }
+      // $(".photo-slide").fadeIn("fast");
       $(".default-slider").unslider({
           autoplay: true,
           speed: 1000

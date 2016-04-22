@@ -126,6 +126,7 @@ button {
 
 #content{
   width: 400px;
+  height: 350px;
 }
 .image-slide {
   width: 100%;
@@ -172,6 +173,7 @@ button:focus {outline:0;}
 @media (max-width: 600px) {
   #content {
     width: 150px;
+    height: 200px;
     font-size: 10px;
   }
 
