@@ -125,7 +125,7 @@ button {
 }
 
 #content{
-  width: 300px;
+  width: 400px;
 }
 .image-slide {
   width: 100%;
@@ -167,4 +167,12 @@ button:focus {outline:0;}
 
 .wrapper.open {
   transform: translateX(230px);
+}
+
+@media (max-width: 600px) {
+  #content {
+    width: 150px;
+    font-size: 10px;
+  }
+
 }

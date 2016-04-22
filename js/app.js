@@ -223,7 +223,7 @@ $(function(){
           "<div id='content'>" +
             "<div class='default-slider'>" +
               "<ul>" +
-                "<li><img src='" + self.currentItem().photoString + "' class='image-slide'  /></li>" +
+                "<li><img src='" + self.currentPhoto() + "' class='image-slide'  /></li>" +
                 "<li><img src='" + self.currentPhoto() + "' class='image-slide'  /></li>" +
                 "<li><img src='" + self.currentPhoto() + "' class='image-slide'  /></li>" +
                 // "<li><img src='images/200.jpeg' class='image-slide' /></li>" +
