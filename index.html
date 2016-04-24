@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/unslider-dots.css" />
     <link rel="stylesheet" href="css/unslider.css" />
+    <link href='https://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
     <!-- <link rel="stylesheet" href="css/jqueryMobile/jquery.mobile.external-png-1.4.5.min.css" />
     <link rel="stylesheet" href="css/jqueryMobile/jquery.mobile.icons-1.4.5.min.css" />
     <link rel="stylesheet" href="css/jqueryMobile/jquery.mobile.inline-png-1.4.5.min.css" />
@@ -32,7 +33,7 @@
 <body>
   <div class="wrapper">
     <button id="main-button" data-bind="click: displayRandom">Show Me Another!</button>
-    <div class="header">
+    <div id="header">
       <h1 class="site-title">Take me Somewhere New!</h1>
       <i class="fa fa-bars nav-toggle"></i>
       <nav class="nav-bar">
@@ -45,7 +46,7 @@
             <li><button id="search-now" data-bind="click: fourSquareApiCall">Search Now</button></li>
             <li>
 
-              <select multiple="multiple" height="7" data-bind="options: fourSquareResults, optionsText: 'name', selectedOptions: selectedItems">
+              <select multiple="multiple" height="7" data-bind="options: fourSqResults, optionsText: 'name', selectedOptions: selectedItems">
               </select>
             </li>
 

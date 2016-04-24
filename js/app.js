@@ -31,8 +31,13 @@ $(function(){
 
   $("#display-random").on("click", function(){
     $(".wrapper").toggleClass("open");
-
   });
+
+  $("#main-button").on("click", function(){
+    if ($(".wrapper").hasClass("open")){
+      $(".wrapper").toggleClass("open");
+    }
+  })
 
 
   var ViewModel = function(){
@@ -46,24 +51,22 @@ $(function(){
     this.resultName = ko.observable();
     this.resultId = ko.observableArray([]);
     this.resultLimit = ko.observable(10);
-    this.fourSquareResults = ko.observableArray([]);
+    this.fourSqResults = ko.observableArray([]);
 
     this.selectedItems = ko.observableArray([]);
 
     this.currentItem = ko.observable();
 
-    var fourSqPhotoString;
-
     var fourSqSettings = {};
 
 
     this.removeSelected = function(){
-      self.fourSquareResults.removeAll(self.selectedItems());
+      self.fourSqResults.removeAll(self.selectedItems());
       self.selectedItems([]);
     }
 
     this.fourSquareApiCall = function(){
-      self.fourSquareResults([]);
+      self.fourSqResults([]);
 
       fourSqSettings = {
         baseUrl: "https://api.foursquare.com/v2/venues/",
@@ -84,17 +87,15 @@ $(function(){
         fourSqSettings.cat +
         fourSqSettings.limit;
 
-      console.log(fourSqSettings.loc)
-      console.log(fourSqSearch_URL)
       // Empty results array:
-      self.fourSquareResults([]);
+      self.fourSqResults([]);
       // Request info from Foursqaure:
       $.ajax(fourSqSearch_URL)
         .fail(function(data){
           console.log("Failed 4square request");
         })
         .done(function(data){
-          console.log(data);
+          // console.log(data);
           var venues = data.response.venues;
           var resultObj;
           for (var venue in venues){
@@ -107,12 +108,9 @@ $(function(){
             };
             // call second foursquare api request, passing in the current resultObj
             fourSqPhotoCall(resultObj, fourSqSettings);
-            console.log(resultObj);
-
+            fourSqReviewCall(resultObj, fourSqSettings);
           };
-
-          console.log(self.fourSquareResults());
-
+          // console.log(self.fourSqResults());
         })
       };
     // foursquare photo api request, loads array of photos into the resultObj from the first api
@@ -125,7 +123,7 @@ $(function(){
           console.log(self.resultId()[0]);
         })
         .done(function(photoData){
-          console.log(photoData);
+          // console.log(photoData);
           var photos = photoData.response.photos.items;
           var photoArray = [];
 
@@ -133,15 +131,36 @@ $(function(){
             photoArray.push([photos[photo].prefix + "300x200" + photos[photo].suffix]);
           }
           if (photoArray.length > 0){
-            obj.photoString = photoArray;
+            obj.photoSrc = photoArray;
           } else {
-            obj.photoString = ["images/noPhoto.jpg"];
+            obj.photoSrc = ["images/noPhoto.jpg"];
           }
-        self.fourSquareResults.push(obj);
-
-        console.log(self.fourSquareResults());
-
       })
+    };
+
+    var fourSqReviewCall = function(obj, settings){
+      $.ajax({
+        url: settings.baseUrl + obj.id + "/tips?" + settings.clientID + settings.clientSecret + "&v=20130815"
+        })
+        .fail(function(reviewData){
+          console.log("Failed 4square review request");
+          console.log(self.resultId()[0]);
+        })
+        .done(function(reviewData){
+          console.log(reviewData);
+          var reviewArray = [];
+          var reviews = reviewData.response.tips.items;
+
+          for (var review in reviews){
+            reviewArray.push(reviews[review].text);
+          };
+          if (reviewArray.length > 0){
+            obj.reviews = reviewArray;
+          };
+        self.fourSqResults.push(obj);
+        console.log(self.fourSqResults());
+
+        })
     };
 
     var lastVenue;
@@ -149,18 +168,18 @@ $(function(){
     this.displayRandom = function(){
 
       // generate a unique random number for use in indexing
-      var ranNum = Math.floor(Math.random() * self.fourSquareResults().length);
+      var ranNum = Math.floor(Math.random() * self.fourSqResults().length);
 
       // ensure the app can't return the same random venue twice in a row
-      if (ranNum == lastVenue && self.fourSquareResults().length > 1){
+      if (ranNum == lastVenue && self.fourSqResults().length > 1){
         while (ranNum == lastVenue){
-          ranNum = Math.floor(Math.random() * self.fourSquareResults().length);
+          ranNum = Math.floor(Math.random() * self.fourSqResults().length);
         }
       }
       lastVenue = ranNum;
 
       // set the contents of currentItem to be the 4-SQR result at [ranNum]
-      self.currentItem(self.fourSquareResults()[ranNum]);
+      self.currentItem(self.fourSqResults()[ranNum]);
 
       // set the lat/lng for use within the scope of this function
       var newLat = self.currentItem().lat;
@@ -168,23 +187,25 @@ $(function(){
 
       self.resultName(self.currentItem().name);
       self.resultId(self.currentItem().id);
-      // self.currentPhoto(self.currentItem().photoString);
+      // self.currentPhoto(self.currentItem().photoSrc);
       fourSqSettings.id = self.currentItem().id;
 
           // some console logs
-          console.log(self.fourSquareResults());
+          console.log(self.fourSqResults());
           // console.log(self.resultName());
           console.log(self.currentItem());
           // console.log(self.resultId());
           // console.log(fourSqPhoto_URL);
           // console.log(fourSqSettings);
-          console.log(self.currentItem().photoString.length);
+          console.log(self.currentItem().photoSrc.length);
 
       // set myLatLong to be an object with currentItem[ranNum].lat/lng as its properties
       myLatLong = {lat: newLat, lng: newLng};
 
       // pan map to myLatLong
-      map.panTo(myLatLong);
+      map.setCenter(myLatLong);
+      map.panBy(0, -250);
+
 
       // create a new marker if there is none, otherwise move the existing one
       if (!marker) {
@@ -205,12 +226,16 @@ $(function(){
       infoWindow = new google.maps.InfoWindow({
         content:
           "<div id='content'>" +
-            "<div class='default-slider'>" +
+            "<div class='photo-slider'>" +
               "<ul class='photo-slides'>" +
               "</ul>" +
             "</div>" +
-            "<h1 id='firstHeading' class='firstHeading'>" + self.resultName() +
+            "<h1 id='first-heading'>" + self.resultName() +
             "</h1>" +
+            "<div class='review-slider'>" +
+              "<ul class='review-slides'>" +
+              "</ul>" +
+            "</div>" +
           "</div>"
       });
 
@@ -218,37 +243,37 @@ $(function(){
 
       // open the new infowindow
       infoWindow.open(map, marker, this);
-      if (self.currentItem().photoString.length > 0){
-        var images = self.currentItem().photoString;
+      if (self.currentItem().photoSrc.length > 0){
+        var images = self.currentItem().photoSrc;
         for (photo = 0; photo < 15 && photo < images.length; photo++){
           $(".photo-slides").append("<li><img src='" + images[photo] + "' class='image-slide'  /></li>");
         }
       } else {
           $(".photo-slides").append("<li><img src='" + images + "' class='image-slide'  /></li>");
       }
-      // $(".photo-slide").fadeIn("fast");
-      $(".default-slider").unslider({
+
+      if (self.currentItem().reviews){
+        var text = self.currentItem().reviews;
+        for (item = 0; item < 5 && item < text.length; item ++){
+          $(".review-slides").append("<li><p class='review-slide'>" + text[item] + "</p></li>");
+        }
+      } else {
+          $(".review-slides").append("<li><p>Looks like there are no reviews!</p></li>");
+      }
+
+      $(".photo-slider").unslider({
           autoplay: true,
-          speed: 1000
+          speed: 750,
+          infinite: true
         });
-
-      // adjust the map's "center"
-      mapRecenter(myLatLong, 0, -150);
+      $(".review-slider").unslider({
+        autoplay: true,
+        speed: 1300,
+        delay: 4000,
+        infinite: true
+      });
+      $(".gm-style-iw").parent().addClass('pink')
     };
-
-    var mapRecenter = function(latlng,offsetx,offsety) {
-      var point1 = map.getProjection().fromLatLngToPoint(
-          (latlng instanceof google.maps.LatLng) ? latlng : map.getCenter()
-      );
-      var point2 = new google.maps.Point(
-          ( (offsetx) / Math.pow(2, map.getZoom()) ) || 0,
-          ( (offsety) / Math.pow(2, map.getZoom()) ) || 0
-      );
-      map.setCenter(map.getProjection().fromPointToLatLng(new google.maps.Point(
-          point1.x - point2.x,
-          point1.y + point2.y
-      )));
-    }
   };
 
   ko.applyBindings(new ViewModel);
