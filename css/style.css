@@ -286,3 +286,9 @@ button:focus {outline:0;}
   }
 
 }
+
+@media (max-width: 400px) {
+  #first-time-dbox {
+    width: 140px;
+  }
+}
