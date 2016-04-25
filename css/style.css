@@ -1,5 +1,6 @@
 * {
   font-family: 'Droid Sans', sans-serif;
+  /*color: #333;*/
   /*background: pink;*/
 }
 
@@ -15,6 +16,65 @@ html, body {
     display: none;
 }
 
+.closed {
+  display: none;
+}
+
+#first-time-arrow {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: -3px;
+  margin-left: -10px;
+  z-index: 2;
+  -webkit-filter: drop-shadow(5px 0px 3px #555);
+}
+
+/*#first-time-arrow img {
+  box-shadow: 10px 10px 5px #888888;
+}*/
+
+#first-time-dbox {
+  position: absolute;
+  color: #333;
+  padding: 0px 10px 10px 10px;
+  top: 50px;
+  left: 20px;
+  width: 200px;
+  /*height: 300px;*/
+  border: 2px solid #333;
+  border-radius: 5px;
+  z-index: 2;
+  background: white;
+  -webkit-filter: drop-shadow(5px 5px 3px #555);
+}
+
+#first-time-dbox ol {
+  padding-left: 15px;
+  margin-top: 0px;
+}
+
+#first-time-dbox p {
+  margin-top: 10px;
+  font-size: 14px;
+  /*text-align: center;*/
+}
+
+#dismiss-dialogue {
+  display: block;
+  bottom: 0px;
+  width: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.wrapper {
+  position: relative;
+  height: 94.8%;
+  width: 100%;
+  transform: translateX(0);
+  transition: transform 1s ease;
+  z-index: 1;
+}
 
 #map {
   height: 100vh;
@@ -83,11 +143,20 @@ nav li {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 170px;
   height: 100vh;
   background: #222;
   text-align: right;
   transform: translateX(-100%);
+}
+
+.nav-title {
+  font-size: 15px;
+  cursor: default;
+}
+
+.wrapper.open {
+  transform: translateX(170px);
 }
 
 .nav-bar.open {
@@ -134,6 +203,7 @@ select, button {
 
 select {
   height: 200px;
+  outline: none;
 }
 
 button {
@@ -196,18 +266,17 @@ button:focus {outline:0;}
   background: #333;
 }
 
-
-.wrapper {
-  position: relative;
-  height: 94.8%;
-  width: 100%;
-  transform: translateX(0);
-  transition: transform 1s ease;
+.signature {
+  margin-top: 20px;
+  color: red;
+  font-size: 10px;
+  cursor: default;
 }
 
-.wrapper.open {
-  transform: translateX(170px);
-}
+
+
+
+
 
 @media (max-width: 600px) {
   #content {

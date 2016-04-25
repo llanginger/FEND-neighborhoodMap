@@ -15,8 +15,7 @@
     <link rel="stylesheet" href="css/jqueryMobile/jquery.mobile.theme-1.4.5.min.css" /> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <!-- <script src="js/lib/knockout.js"></script> -->
-
+    <script src="js/lib/locally.min.js"></script>
     <script src="js/lib/unslider-min.js"></script>
     <script src="js/app.js"></script>
     <!-- <script src="js/lib/jquery.mobile.custom.min.js"></script> -->
@@ -40,7 +39,7 @@
       <i class="fa fa-bars nav-toggle" id="hamburger"></i>
       <nav class="nav-bar">
         <ul>
-          <li><a href="#">What do you want?</a></li>
+          <li><a href="#" class="nav-title">What do you want?</a></li>
           <li></span></li>
 
           <li><input type="text" id="location" data-bind="value: searchLocation" /></li>
@@ -54,6 +53,8 @@
 
           <li><button id="remove-item" data-bind="click: removeSelected, enable: selectedItems().length > 0">Remove</button></a></li>
           <li><button id="display-random" data-bind="click: displayRandom">Take me there!</button></li>
+          <li><a href="#" class="signature">A Web App by Leo Langinger</a></li>
+          <!-- <li><button id="show-tutorial">Show instructions</button></li> -->
         </ul>
       </nav>
     </div>

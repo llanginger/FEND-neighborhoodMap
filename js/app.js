@@ -1,6 +1,3 @@
-// TODO:  Check out jquerymobile for mobile styling.
-//        Look into localstorage so that options persist.
-//        Style.
 
 // Google Maps code:
 var myLatLongArray = [[47.6792, -122.3860]];
@@ -17,22 +14,55 @@ function initMap() {
   });
 
   infoWindow = new google.maps.InfoWindow();
-
-
 }
 
+var Store = window.Locally.Store;
+var store = new Store();
 
 
 $(function(){
 
+
+  if (!store.get("arrow")){
+    $(".wrapper").prepend('<img id="first-time-arrow" src="images/arrow.png" />')
+  }
+
+  if (!store.get("dBox")){
+    $(".wrapper").prepend(
+      "<div id='first-time-dbox' class='closed'>" +
+      "<ol>" +
+        "<li><p>First, enter where you'd like to look.</p></li>" +
+        "<li><p>Then enter what you're looking for. This could be anything from coffee to bike shops! When you're done, hit \"Search Now\".</p></li>" +
+        "<li><p>You can remove any places you've already been from the list below by selecting them and hitting the \"Remove\" button.</p></li>" +
+        "<li><p>When you're ready, hit \"Take me there!\" to be shown a random result from the list. If you don't like the first option, just hit \"Show me another\" until you do!</p></li>" +
+      "</ol>" +
+      "<button id='dismiss-dialogue'>Ok, got it!</button>" +
+    "</div>");
+  }
+
+
+
+
+
   $(".nav-toggle").on("click", function(){
+    store.set("arrow", true);
     $(".wrapper").toggleClass("open");
     $("#hamburger").toggleClass("red");
+    $("#first-time-arrow").addClass("closed");
+    $("#first-time-dbox").toggleClass("closed");
+
   });
+
+  $("#dismiss-dialogue").on("click", function(){
+    $("#first-time-dbox").addClass("closed");
+    store.set("dBox", true);
+    $("#first-time-dbox").remove();
+  })
 
   $("#display-random").on("click", function(){
     $(".wrapper").toggleClass("open");
     $("#hamburger").removeClass("red");
+    $("#first-time-dbox").addClass("closed");
 
   });
 
@@ -40,6 +70,7 @@ $(function(){
     if ($(".wrapper").hasClass("open")){
       $(".wrapper").toggleClass("open");
       $("#hamburger").removeClass("red");
+      $("#first-time-dbox").addClass("closed");
       // $("#hamburger").addClass('red');
     }
   });
