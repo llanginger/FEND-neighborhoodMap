@@ -27,17 +27,50 @@ $(function(){
 
   $(".nav-toggle").on("click", function(){
     $(".wrapper").toggleClass("open");
+    $("#hamburger").toggleClass("red");
   });
 
   $("#display-random").on("click", function(){
     $(".wrapper").toggleClass("open");
+    $("#hamburger").removeClass("red");
+
   });
 
   $("#main-button").on("click", function(){
     if ($(".wrapper").hasClass("open")){
       $(".wrapper").toggleClass("open");
+      $("#hamburger").removeClass("red");
+      // $("#hamburger").addClass('red');
     }
-  })
+  });
+
+
+
+  var locValue;
+
+  $("#location").on("focus", function(){
+    locValue = $(this).val();
+    $(this).val("");
+  });
+
+  $("#location").on("blur", function(){
+    if ($(this).val() == ""){
+      $(this).val(locValue);
+    };
+  });
+
+  var catValue;
+
+  $("#category").on("focus", function(){
+    catValue = $(this).val();
+    $(this).val("");
+  });
+
+  $("#category").on("blur", function(){
+    if ($(this).val() == ""){
+      $(this).val(catValue);
+    };
+  });
 
 
   var ViewModel = function(){
@@ -46,11 +79,11 @@ $(function(){
     // this.googleMap = map;
 
     // 4-SQR SECTION:
-    this.searchLocation = ko.observable("ballard");
-    this.searchCategory = ko.observable("donuts");
+    this.searchLocation = ko.observable("Where are you?");
+    this.searchCategory = ko.observable("What do you want?");
     this.resultName = ko.observable();
     this.resultId = ko.observableArray([]);
-    this.resultLimit = ko.observable(10);
+    this.resultLimit = ko.observable(15);
     this.fourSqResults = ko.observableArray([]);
 
     this.selectedItems = ko.observableArray([]);
@@ -204,7 +237,7 @@ $(function(){
 
       // pan map to myLatLong
       map.setCenter(myLatLong);
-      map.panBy(0, -250);
+      map.panBy(0, -280);
 
 
       // create a new marker if there is none, otherwise move the existing one
@@ -246,10 +279,10 @@ $(function(){
       if (self.currentItem().photoSrc.length > 0){
         var images = self.currentItem().photoSrc;
         for (photo = 0; photo < 15 && photo < images.length; photo++){
-          $(".photo-slides").append("<li><img src='" + images[photo] + "' class='image-slide'  /></li>");
+          $(".photo-slides").append("<li><img src='" + images[photo] + "' class='photo-slide'  /></li>");
         }
       } else {
-          $(".photo-slides").append("<li><img src='" + images + "' class='image-slide'  /></li>");
+          $(".photo-slides").append("<li><img src='" + images + "' class='photo-slide'  /></li>");
       }
 
       if (self.currentItem().reviews){
@@ -261,18 +294,35 @@ $(function(){
           $(".review-slides").append("<li><p>Looks like there are no reviews!</p></li>");
       }
 
-      $(".photo-slider").unslider({
+      if ($(".photo-slide").length > 1){
+        $(".photo-slider").unslider({
           autoplay: true,
           speed: 750,
           infinite: true
-        });
-      $(".review-slider").unslider({
-        autoplay: true,
-        speed: 1300,
-        delay: 4000,
-        infinite: true
-      });
-      $(".gm-style-iw").parent().addClass('pink')
+        })
+      } else {
+        $(".photo-slider").unslider({
+          autoplay: false,
+          nav: false
+        })
+        $("#content").css("height", "380");
+      }
+
+      if ($(".review-slide").length > 1){
+        $(".review-slider").unslider({
+          autoplay: true,
+          speed: 1300,
+          delay: 4000,
+          infinite: true
+        })
+      } else {
+        $(".review-slider").unslider({
+          autoplay: false,
+          nav: false
+        })
+        $("#content").css("height", "380");
+      }
+      // $(".gm-style-iw").parent().addClass('pink')
     };
   };
 

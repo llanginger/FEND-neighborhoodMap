@@ -3,6 +3,8 @@
 
 
 <head>
+  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/unslider-dots.css" />
     <link rel="stylesheet" href="css/unslider.css" />
@@ -35,27 +37,23 @@
     <button id="main-button" data-bind="click: displayRandom">Show Me Another!</button>
     <div id="header">
       <h1 class="site-title">Take me Somewhere New!</h1>
-      <i class="fa fa-bars nav-toggle"></i>
+      <i class="fa fa-bars nav-toggle" id="hamburger"></i>
       <nav class="nav-bar">
         <ul>
-            <li><a href="#">What are you in the mood for?</a></li>
-            <li></span></li>
+          <li><a href="#">What do you want?</a></li>
+          <li></span></li>
 
-            <li><input id="category" data-bind="value: searchCategory" /></li>
-            <li><input id="location" data-bind="value: searchLocation" /></li>
-            <li><button id="search-now" data-bind="click: fourSquareApiCall">Search Now</button></li>
-            <li>
+          <li><input type="text" id="location" data-bind="value: searchLocation" /></li>
+          <li><input type="text" id="category" data-bind="value: searchCategory" onfocus="value: "/></li>
+          <li><button id="search-now" data-bind="click: fourSquareApiCall">Search Now</button></li>
+          <li>
 
-              <select multiple="multiple" height="7" data-bind="options: fourSqResults, optionsText: 'name', selectedOptions: selectedItems">
-              </select>
-            </li>
+            <select multiple="multiple" height="7" data-bind="options: fourSqResults, optionsText: 'name', selectedOptions: selectedItems">
+            </select>
+          </li>
 
-            <li><button id="remove-item" data-bind="click: removeSelected, enable: selectedItems().length > 0">Remove</button></a></li>
-            <li><button id="display-random" data-bind="click: displayRandom">Let's Go!</button></li>
-            <li><a href="#">Contact Us</a></li>
-            <div class="ui-field-contain">
-
-</div>
+          <li><button id="remove-item" data-bind="click: removeSelected, enable: selectedItems().length > 0">Remove</button></a></li>
+          <li><button id="display-random" data-bind="click: displayRandom">Take me there!</button></li>
         </ul>
       </nav>
     </div>
@@ -65,10 +63,6 @@
 
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdS-dn6vAIsgW2itZp-CYpD-8ZFw3n4JQ&callback=initMap" async defer></script>
-
-
-  <div
-
 
   </div>
 </body>
