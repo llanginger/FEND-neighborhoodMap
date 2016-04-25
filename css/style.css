@@ -300,6 +300,7 @@ button:focus {outline:0;}
     height: 75px;
   }
   #first-time-dbox {
+    top: 58px;
     width: 290px;
   }
   #main-button {
