@@ -75,6 +75,10 @@ $(function(){
     }
   });
 
+  $("#reset-tutorial").on("click", function(){
+    store.clear();
+  })
+
 
 
   var locValue;
