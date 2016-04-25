@@ -77,6 +77,7 @@ $(function(){
 
   $("#reset-tutorial").on("click", function(){
     store.clear();
+    location.reload();
   })
 
 
