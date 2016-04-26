@@ -63,6 +63,7 @@ $(function(){
     $(".wrapper").toggleClass("open");
     $("#hamburger").removeClass("red");
     $("#first-time-dbox").addClass("closed");
+    $("#main-button").removeClass("closed");
 
   });
 
@@ -139,7 +140,7 @@ $(function(){
 
       fourSqSettings = {
         baseUrl: "https://api.foursquare.com/v2/venues/",
-        search: "search?",
+        search: "explore?",
         clientID: "client_id=" + "WGMJMEF5PGBY0Z2VPGOTUV4IZWYTZS5V1E0TPIJHBSHRXNWS",
         clientSecret: "&client_secret=" + "MPIRWAHDMNBZVY2LSAVR1Y0WLQEP5SLDQHIXJZLVFILJHJDQ",
         loc: "near=" + self.searchLocation(),
@@ -164,16 +165,17 @@ $(function(){
           console.log("Failed 4square request");
         })
         .done(function(data){
-          // console.log(data);
-          var venues = data.response.venues;
+          console.log(data);
+          var venues = data.response.groups[0].items;
+          console.log(venues);
           var resultObj;
           for (var venue in venues){
             // console.log(venues[venue].id);
             resultObj = {
-              name: venues[venue].name,
-              lat: venues[venue].location.lat,
-              lng: venues[venue].location.lng,
-              id: venues[venue].id
+              name: venues[venue].venue.name,
+              lat: venues[venue].venue.location.lat,
+              lng: venues[venue].venue.location.lng,
+              id: venues[venue].venue.id
             };
             // call second foursquare api request, passing in the current resultObj
             fourSqPhotoCall(resultObj, fourSqSettings);
@@ -348,7 +350,7 @@ $(function(){
         $(".review-slider").unslider({
           autoplay: true,
           speed: 1300,
-          delay: 4000,
+          delay: 6000,
           infinite: true
         })
       } else {

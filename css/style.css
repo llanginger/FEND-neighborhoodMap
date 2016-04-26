@@ -73,7 +73,7 @@ html, body {
   height: 100%;
   width: 100%;
   transform: translateX(0);
-  transition: transform 1s ease;
+  transition: transform 1.5s ease;
   z-index: 1;
 }
 
@@ -141,6 +141,11 @@ nav li {
   list-style: none;
 }
 
+nav li:nth-of-type(2) {
+  margin-top: -8px;
+}
+
+
 .nav-bar {
   position: fixed;
   top: 0;
@@ -153,6 +158,7 @@ nav li {
 }
 
 .nav-title {
+  margin-top: 11px;
   font-size: 15px;
   cursor: default;
 }
@@ -204,7 +210,7 @@ select, button {
 }
 
 select {
-  height: 100px;
+  height: 300px;
   outline: none;
 }
 
@@ -295,9 +301,9 @@ button:focus {outline:0;}
   }
 }
 
-@media (max-height: 420px) {
+@media (max-height: 696px) {
   select {
-    height: 75px;
+    height: 30px;
   }
   #first-time-dbox {
     top: 58px;
