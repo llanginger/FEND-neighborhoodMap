@@ -73,7 +73,7 @@ html, body {
   height: 100%;
   width: 100%;
   transform: translateX(0);
-  transition: transform 1.5s ease;
+  transition: transform 1.2s ease;
   z-index: 1;
 }
 
